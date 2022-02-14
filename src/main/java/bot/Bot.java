@@ -2,6 +2,7 @@ package bot;
 
 import bd.controller.UsersDAOIml;
 import bd.data.User;
+import config.Config;
 import lombok.SneakyThrows;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -13,7 +14,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Optional;
+import java.util.Properties;
 
 
 public class Bot  extends TelegramLongPollingBot {
@@ -63,14 +67,16 @@ public class Bot  extends TelegramLongPollingBot {
         this.usersController = usersController;
     }
 
+
+
     @Override
     public String getBotUsername() {
-        return "@testJabkevichBot";
+        return Config.getConfigField("BOT_NAME");
     }
 
     @Override
     public String getBotToken() {
-        return "5137085732:AAE6Vy6P-T6T1zqRlj2RU7ZK8-MpQ9c1RbA";
+        return  Config.getConfigField("BOT_TOKEN");
     }
 
 

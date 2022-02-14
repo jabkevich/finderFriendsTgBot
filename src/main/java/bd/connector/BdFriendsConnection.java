@@ -1,9 +1,15 @@
 package bd.connector;
 
+import config.Config;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 public class BdFriendsConnection {
 
@@ -13,11 +19,11 @@ public class BdFriendsConnection {
     public static Connection getBdFriendsConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
 
+        String url = Config.getConfigField("URL");
+        String dbName = Config.getConfigField("DB_NAME");
+        String username = Config.getConfigField("USERNAME");
+        String password = Config.getConfigField("PASSWORD");
 
-        String url = "jdbc:mysql://51.250.30.209";
-        String dbName = "tgUsers";
-        String username = "root";
-        String password = "root";
 
         try {
             if(conn == null) {
