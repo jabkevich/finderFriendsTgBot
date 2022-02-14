@@ -55,7 +55,7 @@ public class Bot  extends TelegramLongPollingBot {
                         );
                         return;
                     case "/start":
-                        usersController.add(message.getFrom().getUserName().toString());
+                        usersController.add(message.getFrom().getUserName().toString(),message.getFrom().getId().toString());
                         return;
 
                 }

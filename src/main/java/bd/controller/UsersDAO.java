@@ -7,10 +7,11 @@ import java.util.List;
 
 public interface UsersDAO {
     List<User> UsersList();
-    void add(String username) throws SQLException;
+    void add(String username, String id) throws SQLException;
     void delete(User user) throws SQLException;
     void edit(User user);
-    User getByUsername(String username) throws SQLException;
+    User getById(String id);
+    User getByUsername(String username);
     User getRandomUser() throws SQLException;
     int getCountOfRecords() ;
 }

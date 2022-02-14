@@ -42,8 +42,8 @@ public class UsersDAOIml implements UsersDAO {
     }
 
     @Override
-    public void add(String username)  {
-        final String request = String.format("INSERT INTO User VALUES ('%s')", username);
+    public void add(String username, String id)  {
+        final String request = String.format("INSERT INTO User VALUES ('%s', '%s')", id,username);
         makeARequest(request);
     }
 
@@ -70,6 +70,14 @@ public class UsersDAOIml implements UsersDAO {
             err.printStackTrace();
             return null;
         }
+    }
+
+
+
+    @Override
+    public User getById(String id) {
+        final String request = String.format("SELECT username FROM User where id = %s", id);
+        return getUser(makeARequestAndGetResponse(request));
     }
 
 
