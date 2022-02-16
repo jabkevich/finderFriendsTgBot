@@ -1,18 +1,21 @@
 package config;
 
-import java.io.FileReader;
-import java.io.IOException;
+import javax.ws.rs.core.Application;
+import java.io.*;
 import java.util.Properties;
 
 public class Config {
-    static Properties properties = null;
+    static Properties properties = new Properties();
 
     public static String getConfigField(String filed) {
         try {
-            if(properties == null){
-                FileReader reader = new FileReader("config");
-                properties = new Properties();
-                properties.load(reader);
+            if(properties.isEmpty()){
+                final String propFileName = "config.properties";
+                InputStream inputStream = Config.class.getClassLoader().getResourceAsStream(propFileName);
+                if (inputStream == null) {
+                    throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
+                }
+                properties.load(inputStream);
             }
             return properties.getProperty(filed);
         } catch (IOException e) {

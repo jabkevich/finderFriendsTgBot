@@ -36,7 +36,7 @@ public class BdFriendsConnection {
             Statement statement = connection.createStatement();
 
             statement.execute("CREATE DATABASE IF NOT EXISTS " + dbName);
-            statement.execute("CREATE TABLE " + dbName +".User (id PRIMARY KEY,username VARCHAR(255))");
+            statement.execute("CREATE TABLE " + dbName +".User (id PRIMARY KEY, username VARCHAR(255))");
 
             conn =  DriverManager.getConnection(url + "/" +dbName, username, password);
 
