@@ -1,6 +1,6 @@
-package bd.controller;
+package db.controller;
 
-import bd.data.User;
+import db.data.User;
 
 import java.sql.*;
 import java.util.List;
@@ -43,13 +43,13 @@ public class UsersDAOIml implements UsersDAO {
 
     @Override
     public void add(String username, String id)  {
-        final String request = String.format("INSERT INTO User VALUES ('%s', '%s')", id,username);
+        final String request = String.format("INSERT INTO User(id, username) VALUES ('%s', '%s')", id,username);
         makeARequest(request);
     }
 
     @Override
     public void delete(User user) throws SQLException {
-        final String request = String.format("DELETE FROM User WHERE username '%s'", user.getUsername());
+        final String request = String.format("DELETE FROM User WHERE id '%s'", user.getUsername());
         makeARequest(request);
     }
 
@@ -64,6 +64,7 @@ public class UsersDAOIml implements UsersDAO {
             if (resultSet.next()){
                 user = new User();
                 user.setUsername(resultSet.getString("username"));
+                user.setId(resultSet.getString("id"));
             }
             return user;
         }catch (SQLException err) {
@@ -76,21 +77,21 @@ public class UsersDAOIml implements UsersDAO {
 
     @Override
     public User getById(String id) {
-        final String request = String.format("SELECT username FROM User where id = %s", id);
+        final String request = String.format("SELECT username, id FROM User where id = %s", id);
         return getUser(makeARequestAndGetResponse(request));
     }
 
 
     @Override
     public User getByUsername(String username) {
-        final String request = String.format("SELECT username FROM User where username = %s", username);
+        final String request = String.format("SELECT username, id FROM User where username = %s", username);
         return getUser(makeARequestAndGetResponse(request));
     }
 
     @Override
     public User getRandomUser() {
         //WHERE username <> '' AND username <> '' в будущем планируется исключать уже предложенных пользователей
-        final String request = "SELECT * FROM User ORDER BY RAND() LIMIT 1;";
+        final String request = "SELECT username, id FROM User ORDER BY RAND() LIMIT 1;";
         return getUser(makeARequestAndGetResponse(request));
     }
 

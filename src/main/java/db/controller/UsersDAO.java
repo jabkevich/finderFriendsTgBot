@@ -1,6 +1,6 @@
-package bd.controller;
+package db.controller;
 
-import bd.data.User;
+import db.data.User;
 
 import java.sql.SQLException;
 import java.util.List;

@@ -1,6 +1,5 @@
 package config;
 
-import javax.ws.rs.core.Application;
 import java.io.*;
 import java.util.Properties;
 

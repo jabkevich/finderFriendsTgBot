@@ -1,7 +1,6 @@
-import bd.connector.BdFriendsConnection;
-import bd.controller.UsersDAOIml;
+import db.connector.BdFriendsConnection;
+import db.controller.UsersDAOIml;
 import bot.Bot;
-import config.Config;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.sql.Connection;

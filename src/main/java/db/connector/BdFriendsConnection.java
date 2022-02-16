@@ -1,15 +1,11 @@
-package bd.connector;
+package db.connector;
 
 import config.Config;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
 public class BdFriendsConnection {
 
@@ -34,9 +30,9 @@ public class BdFriendsConnection {
         } catch (SQLException err) {
             Connection connection = DriverManager.getConnection(url, username, password);
             Statement statement = connection.createStatement();
-
             statement.execute("CREATE DATABASE IF NOT EXISTS " + dbName);
-            statement.execute("CREATE TABLE " + dbName +".User (id PRIMARY KEY, username VARCHAR(255))");
+            statement.execute("CREATE TABLE " + dbName +".User (id INT PRIMARY KEY, username VARCHAR(255))");
+//            connection.close();
 
             conn =  DriverManager.getConnection(url + "/" +dbName, username, password);
 

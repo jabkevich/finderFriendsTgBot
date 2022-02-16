@@ -1,7 +1,7 @@
 package bot;
 
-import bd.controller.UsersDAOIml;
-import bd.data.User;
+import db.controller.UsersDAOIml;
+import db.data.User;
 import config.Config;
 import lombok.SneakyThrows;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
@@ -14,10 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Optional;
-import java.util.Properties;
 
 
 public class Bot  extends TelegramLongPollingBot {
@@ -55,7 +52,7 @@ public class Bot  extends TelegramLongPollingBot {
                         );
                         return;
                     case "/start":
-                        usersController.add(message.getFrom().getUserName().toString(),message.getFrom().getId().toString());
+                        usersController.add(message.getFrom().getUserName().toString(), message.getFrom().getId().toString());
                         return;
 
                 }
