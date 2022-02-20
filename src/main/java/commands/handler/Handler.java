@@ -1,7 +1,19 @@
 package commands.handler;
 
-import java.util.HashMap;
+import commands.handler.commands.AddUserCommand;
+import commands.handler.commands.DelUserCommand;
+import commands.handler.commands.GetUserCommand;
+
+import java.util.Map;
+
+import static java.util.Map.entry;
 
 public class Handler {
-    HashMap<String, ICommand> commandsMap;
+
+    private Map<String, ICommand> commandsHandler = Map.ofEntries(
+            entry("find_friend", new GetUserCommand()),
+            entry("start", new AddUserCommand())
+    );
+
+
 }
