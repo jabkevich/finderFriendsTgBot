@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class Main {
     public static  void main(String[] args) throws TelegramApiException, SQLException, ClassNotFoundException {
         Connection connector = BdFriendsConnection.getBdFriendsConnection();
-        Connection connector1 = BdFriendsConnection.getBdFriendsConnection();
+
         UsersDAOIml usersController = new UsersDAOIml(connector);
         Bot.startBot(usersController);
     }

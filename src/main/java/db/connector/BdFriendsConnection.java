@@ -11,8 +11,11 @@ public  class  BdFriendsConnection {
 
     static Connection conn = null;
 
+    private BdFriendsConnection () {};
+
 
     public static Connection getBdFriendsConnection() throws ClassNotFoundException, SQLException {
+
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         String url = Config.getConfigField("URL");

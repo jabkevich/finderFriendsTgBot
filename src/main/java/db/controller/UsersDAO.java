@@ -12,6 +12,7 @@ public interface UsersDAO {
     void edit(User user);
     User getById(String id);
     User getByUsername(String username);
+    void updateUsername(String id, String username);
     User getRandomUser() throws SQLException;
     int getCountOfRecords() ;
 }

@@ -91,7 +91,7 @@ public class UsersDAOIml implements UsersDAO {
     @Override
     public User getRandomUser() {
         //WHERE username <> '' AND username <> '' в будущем планируется исключать уже предложенных пользователей
-        final String request = "SELECT username, id FROM User ORDER BY RAND() LIMIT 1;";
+        final String request = "SELECT id, username FROM User ORDER BY RAND() LIMIT 1;";
         return getUser(makeARequestAndGetResponse(request));
     }
 
@@ -104,6 +104,15 @@ public class UsersDAOIml implements UsersDAO {
         } catch (SQLException err) {
             err.printStackTrace();
             return 0;
+        }
+    }
+
+    public void updateUsername(String id, String newUsername) {
+        try{
+            final String request =  String.format("UPDATE User SET username='%s' WHERE id = %s;", newUsername, id);
+            statement.execute(request);
+        } catch (SQLException err) {
+            err.printStackTrace();
         }
     }
 }
