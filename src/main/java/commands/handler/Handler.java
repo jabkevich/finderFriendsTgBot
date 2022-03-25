@@ -4,6 +4,7 @@ import bot.Bot;
 import commands.handler.commands.AddUserCommand;
 import commands.handler.commands.DelUserCommand;
 import commands.handler.commands.GetUserCommand;
+import db.controller.UsersDAOIml;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -12,18 +13,20 @@ import static java.util.Map.entry;
 
 public class Handler {
 
-    private Map<String, ICommand> commandsHandler = Map.ofEntries(
-            entry("/find_friend", new GetUserCommand()),
-            entry("/start", new AddUserCommand())
-    );
 
-    public ICommand makeCommand(String string) {
-        try {
-            return commandsHandler.get(string);
-        } catch (NullPointerException ex){
-            ex.getMessage();
-            return null;
-        }
+    private  Map<Commands, ICommand> commandsHandler = null;
+
+    public Handler(Bot bot, UsersDAOIml usersController) {
+        this.commandsHandler = Map.ofEntries(
+                entry(Commands.find_friend, new GetUserCommand(bot, usersController)),
+                entry(Commands.start, new AddUserCommand(bot, usersController))
+        );
+    }
+
+    public ICommand makeCommand(Commands command) {
+
+            return commandsHandler.get(command);
+
     }
 
 }

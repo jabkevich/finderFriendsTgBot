@@ -1,31 +1,23 @@
 package bot;
 
+import commands.handler.Commands;
 import commands.handler.Handler;
 import commands.handler.ICommand;
-import commands.handler.commands.AddUserCommand;
-import commands.handler.commands.GetUserCommand;
 import db.controller.UsersDAOIml;
 import db.data.User;
 import config.Config;
 import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
-
-import static java.util.Map.entry;
 
 
 public class Bot  extends TelegramLongPollingBot {
@@ -40,71 +32,65 @@ public class Bot  extends TelegramLongPollingBot {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        if(update.hasMessage()){
-            handleMessage(update.getMessage());
+        if(!update.hasMessage()){
+            return;
+        }
+        if (!update.getMessage().hasText() || !update.getMessage().hasEntities()) {
+            return;
+        }
+        handleMessage(update.getMessage());
+    }
+
+
+    private void updateUsernameIfChanged(Message message){
+        String userId = message.getFrom().getId().toString();
+        String userName = message.getFrom().getUserName();
+        User user = usersController.getById( userId);
+        if(!Objects.equals(user.getUsername(), message.getFrom().getUserName())){
+            usersController.updateUsername(userId, userName);
         }
     }
 
-    public void adviseTheUser(Message message)  {
+    private Commands getCommand (Message message){
 
-        User user = usersController.getRandomUser();
+        Optional<MessageEntity> commandEntry = message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
 
-        System.out.println(user.getUsername());
+        if (commandEntry.isEmpty()) {
+            return Commands.not_command;
+        }
+
+        final String textCommand = commandEntry.get().getText().substring(1);
 
         try {
-            execute(
-                    SendMessage
-                            .builder()
-                            .text("Попробуй написать ему: " + "@" + user.getUsername())
-                            .chatId(message.getChatId().toString())
-                            .build()
-            );
-        } catch (TelegramApiException ignored) {
-
+            return Commands.valueOf(textCommand);
+        } catch ( IllegalArgumentException e){
+            return Commands.unknown;
         }
-
     }
 
-    public void addUser (@NotNull Message message) {
-        usersController.add(message.getFrom().getUserName().toString(), message.getFrom().getId().toString());
+    private boolean isACommand(Commands command){
+        return command != Commands.not_command && command != Commands.unknown;
     }
-
 
 
     private void handleMessage(Message message) throws TelegramApiException {
-        if (message.hasText() && message.hasEntities()) {
-            Optional<MessageEntity> commandEntry =
-                    message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
 
-            if (commandEntry.isEmpty()) {
-                return;
-            }
+        this.updateUsernameIfChanged(message);
 
-            String userId = message.getFrom().getId().toString();
-            String userName = message.getFrom().getUserName();
-            User user = usersController.getById( userId);
+        final Commands command = this.getCommand(message);
 
-            System.out.println(userName);
-            System.out.println(user.getUsername());
-           if(!Objects.equals(user.getUsername(), message.getFrom().getUserName())){
-                usersController.updateUsername(userId, userName);
-            }
-
-            String command = message.getText().substring(commandEntry.get().getOffset(), commandEntry.get().getLength());
-
-           System.out.println(command);
-            ICommand commander =  this.commandsHandler.makeCommand(command);
-
-            if (commander != null){
-                commander.handleCommand(this, message);
-            }
-
+        if(this.isACommand(command)){
+            ICommand commander = this.commandsHandler.makeCommand(command);
+            execute(commander.handleCommand(message));
         }
+
     }
+
+
     public Bot (DefaultBotOptions options, UsersDAOIml usersController) {
         super(options);
         this.usersController = usersController;
-        this.commandsHandler = new Handler();
+        this.commandsHandler = new Handler(this, usersController);
     }
 
 
